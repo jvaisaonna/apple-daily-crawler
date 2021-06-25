@@ -83,4 +83,5 @@ module.exports = {
   writeFile,
   log,
   existsSync,
+  delay,
 };
