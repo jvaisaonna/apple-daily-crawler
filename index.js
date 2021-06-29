@@ -7,7 +7,6 @@ const { default: axios } = require('axios');
 const moment = require('moment');
 const { existsSync, writeFile, appendToTextFile, log, delay } = require('./utils');
 
-const ERROR_FILE = `./log/${moment().format('YYYYMMDD-HHmmss')}-error.log`;
 const dateFormat = 'YYYY-MM-DD';
 const eDateFormat = 'YYYYMMDD';
 
@@ -63,19 +62,18 @@ async function crawlFeed(date, index) {
     // log(`File exist, skipped - ${filePath}`);
   } else {
     log(`Fetching ${normalDate}-${category}`);
-
     const result = await fetchData(url);
+
     dataHandler(result, index, filePath, errorLabel);
     await delay(100);
   }
 
   if (normalDate === '2000-01-01') {
-    log('==============================================================');
+    log('========================= Loop =========================');
     crawlFeed(process.argv[2], parseInt(process.argv[3]));
-    return;
+  } else {
+    crawlFeed(moment(date, dateFormat).subtract(1, 'days').format(dateFormat), index);
   }
-
-  crawlFeed(moment(date, dateFormat).subtract(1, 'days').format(dateFormat), index);
 }
 
 crawlFeed(process.argv[2], parseInt(process.argv[3]));
